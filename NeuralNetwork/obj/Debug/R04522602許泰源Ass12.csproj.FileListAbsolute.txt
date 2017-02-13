@@ -1,0 +1,10 @@
+c:\users\ted\documents\visual studio 2012\Projects\R04522602許泰源Ass12\R04522602許泰源Ass12\bin\Debug\R04522602許泰源Ass12.exe.config
+C:\Users\Ted\Desktop\SoftComputing\R04522602許泰源Ass12\R04522602許泰源Ass12\bin\Debug\R04522602許泰源Ass12.exe.config
+C:\Users\Ted\Desktop\SoftComputing\R04522602許泰源Ass12\R04522602許泰源Ass12\bin\Debug\R04522602許泰源Ass12.exe
+C:\Users\Ted\Desktop\SoftComputing\R04522602許泰源Ass12\R04522602許泰源Ass12\bin\Debug\R04522602許泰源Ass12.pdb
+C:\Users\Ted\Desktop\SoftComputing\R04522602許泰源Ass12\R04522602許泰源Ass12\obj\Debug\R04522602許泰源Ass12.csprojResolveAssemblyReference.cache
+C:\Users\Ted\Desktop\SoftComputing\R04522602許泰源Ass12\R04522602許泰源Ass12\obj\Debug\R04522602許泰源Ass12.Properties.Resources.resources
+C:\Users\Ted\Desktop\SoftComputing\R04522602許泰源Ass12\R04522602許泰源Ass12\obj\Debug\R04522602許泰源Ass12.csproj.GenerateResource.Cache
+C:\Users\Ted\Desktop\SoftComputing\R04522602許泰源Ass12\R04522602許泰源Ass12\obj\Debug\R04522602許泰源Ass12.exe
+C:\Users\Ted\Desktop\SoftComputing\R04522602許泰源Ass12\R04522602許泰源Ass12\obj\Debug\R04522602許泰源Ass12.pdb
+C:\Users\Ted\Desktop\SoftComputing\R04522602許泰源Ass12\R04522602許泰源Ass12\obj\Debug\R04522602許泰源Ass12.NeuralNetworkSystem.resources

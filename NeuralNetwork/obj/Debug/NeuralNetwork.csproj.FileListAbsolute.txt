@@ -1,0 +1,13 @@
+D:\WeeklyReport\Program\NeuralNetwork\R04522602許泰源Ass12\bin\Debug\R04522602許泰源Ass12.exe.config
+D:\WeeklyReport\Program\NeuralNetwork\R04522602許泰源Ass12\obj\Debug\R04522602許泰源Ass12.exe
+D:\WeeklyReport\Program\NeuralNetwork\R04522602許泰源Ass12\obj\Debug\R04522602許泰源Ass12.pdb
+D:\WeeklyReport\Program\NeuralNetwork\R04522602許泰源Ass12\bin\Debug\NeuralNetwork.exe.config
+D:\WeeklyReport\Program\NeuralNetwork\NeuralNetwork\bin\Debug\NeuralNetwork.exe.config
+D:\WeeklyReport\Program\NeuralNetwork\NeuralNetwork\bin\Debug\NeuralNetwork.exe
+D:\WeeklyReport\Program\NeuralNetwork\NeuralNetwork\bin\Debug\NeuralNetwork.pdb
+D:\WeeklyReport\Program\NeuralNetwork\NeuralNetwork\obj\Debug\NeuralNetwork.csprojResolveAssemblyReference.cache
+D:\WeeklyReport\Program\NeuralNetwork\NeuralNetwork\obj\Debug\NeuralNetwork.Properties.Resources.resources
+D:\WeeklyReport\Program\NeuralNetwork\NeuralNetwork\obj\Debug\NeuralNetwork.csproj.GenerateResource.Cache
+D:\WeeklyReport\Program\NeuralNetwork\NeuralNetwork\obj\Debug\NeuralNetwork.exe
+D:\WeeklyReport\Program\NeuralNetwork\NeuralNetwork\obj\Debug\NeuralNetwork.pdb
+D:\WeeklyReport\Program\NeuralNetwork\NeuralNetwork\obj\Debug\NeuralNetwork.NeuralNetworkSystem.resources
