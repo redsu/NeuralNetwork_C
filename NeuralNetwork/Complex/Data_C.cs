@@ -3,30 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ComplexNum;
 
 namespace NeuralNetwork {
 	class Data_C {
-		public double[][] input;
-		public double[][] output;
+		public Complex[][] input;
+        public Complex[][] output;
 		Random rand = new Random();
 		int numOfVectors = 0;
 		int Din = 0;
 		int Dout = 0;
 		public Data_C(int input_dimension, int output_dimension, int vector_nums){
-			input = new double[vector_nums][];
-			output = new double[vector_nums][];
+            input = new Complex[vector_nums][];
+            output = new Complex[vector_nums][];
 			numOfVectors = vector_nums;
 			Din = input_dimension;
 			Dout = output_dimension;
 			for(int i=0; i<vector_nums; i++)
-				input[i] = new double[input_dimension+1];
+                input[i] = new Complex[input_dimension + 1];
 
 			for(int i=0; i<vector_nums; i++)
-				output[i] = new double[output_dimension];
+                output[i] = new Complex[output_dimension];
 		}
 
 		public void Shuffle(){
-			double temp;
+            Complex temp;
 			for(int i=numOfVectors-1; i>=0; i--){
 				int pos = rand.Next(i+1);
 				for(int j=0; j<Din+1; j++){
