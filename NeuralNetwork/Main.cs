@@ -8,10 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using NeuralNetwork_C;
 namespace NeuralNetwork {
 	public partial class NeuralNetworkSystem : Form {
-		NeuralNetwork NN = null;
+        NeuralNetworkC NN = null;
 		int count = 0;
 		bool FileLoaded;
 		public NeuralNetworkSystem() {
@@ -28,7 +28,7 @@ namespace NeuralNetwork {
 		//Import .cal File
 		private void OpenFile_Click(object sender, EventArgs e) {
 			//new a NeuralNetwork class
-			NN = new NeuralNetwork();
+            NN = new NeuralNetworkC();
 			
 			//Initilize the buttons
 			btn_run.Enabled = false;
@@ -212,7 +212,7 @@ namespace NeuralNetwork {
 		private void DrawNeuralDiagram() {
 			Graphics g;
             g = panel.CreateGraphics();
-            Draw(g, panel.ClientRectangle);
+            //Draw(g, panel.ClientRectangle);
 		}
 
 		void Draw(Graphics g, Rectangle bound){

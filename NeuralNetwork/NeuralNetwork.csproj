@@ -51,6 +51,7 @@
     <Compile Include="Complex\ComplexNum.cs" />
     <Compile Include="Complex\Data_C.cs" />
     <Compile Include="Complex\Layer_C.cs" />
+    <Compile Include="Complex\NeuralNetwork_C.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -59,7 +60,9 @@
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="Layer.cs" />
-    <Compile Include="NeuralNetwork.cs" />
+    <Compile Include="NeuralNetwork.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Main.resx">

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using ComplexNum;
-namespace NeuralNetwork {
+namespace NeuralNetwork_C{
 	class Layer_C {
 		Random rand = new Random();
 		Complex[] neurons;
@@ -54,20 +54,36 @@ namespace NeuralNetwork {
 			weights = new Complex[input_dimension][];
 			weights_prev = new Complex[input_dimension][];
 			for(int i=0; i<input_dimension; i++){
+                neurons[i] = new Complex();
+                epsilons[i] = new Complex();
 				weights[i] = new Complex[output_dimension];
 				weights_prev[i] = new Complex[output_dimension];
+                for (int j = 0; j < output_dimension; j++)
+                {
+                    weights[i][j] = new Complex();
+                    weights_prev[i][j] = new Complex();
+                }
 			}
 			InitWeights();
 		}
 
 		public void Reset(){
 			neurons = new Complex[Din];
-			epsilons    = new Complex[Din];
+			epsilons= new Complex[Din];
 			weights = new Complex[Din][];
 			weights_prev = new Complex[Din][];
-			for(int i=0; i<Din; i++){
-				weights[i] = new Complex[Dout];
-				weights_prev[i] = new Complex[Dout];
+            for (int i = 0; i < Din; i++)
+            {
+                neurons[i]  = new Complex();
+                epsilons[i] = new Complex();
+
+                weights[i] = new Complex[Dout];
+                weights_prev[i] = new Complex[Dout];
+                for (int j = 0; j < Dout; j++)
+                {
+                    weights[i][j] = new Complex();
+                    weights_prev[i][j] = new Complex();
+                }
 			}
 			InitWeights();
 		}
@@ -77,8 +93,8 @@ namespace NeuralNetwork {
 			//But we can do it on the input data before it send in;
 			for(int i=0; i<Din; i++)
 				for(int j=0; j<Dout; j++){
-					weights[i][j].a = (rand.NextDouble()-0.5)*2;
-					weights[i][j].b = (rand.NextDouble()-0.5)*2;
+					weights[i][j].a = (rand.NextDouble()-0.5)*2.0;
+					weights[i][j].b = (rand.NextDouble()-0.5)*2.0;
 					weights_prev[i][j].a = weights_prev[i][j].b = 0.0;
 				}
 		}
@@ -86,27 +102,41 @@ namespace NeuralNetwork {
 		public Complex[] Output(){
 			Complex[] output = new Complex[Dout+1];
 			Complex value = new Complex();
+            output[0] = new Complex(1.0,0.0);
 			for(int i=1; i<Dout+1; i++){
-				value.a = 0;
-				value.b = 0;
+                output[i] = new Complex();
+                value = new Complex();
 				for(int j=0; j<Din; j++){
 					value = value + neurons[j] * weights[j][i-1];				
 				}
 				//Activation function maybe change to tanh();
-				value.a = 1.0 / (1.0 + Math.Exp(-value.a));
-				value.b = 1.0 / (1.0 + Math.Exp(-value.b));
+                Complex N = new Complex(Math.Tanh(value.a), Math.Tan(value.b));
+                Complex D = new Complex(1.0, Math.Tanh(value.a) * Math.Tan(value.b));
+				/*value.a = 1.0 / (1.0 + Math.Exp(-value.a));
+				value.b = 1.0 / (1.0 + Math.Exp(-value.b));*/
+                //value = N / D;
+                
+                //Activation function f(z) = {z/|z|}
+                value = value / value.Norm2();
+                Complex R = new Complex(Math.Exp(value.a),0.0);
+                Complex I = new Complex(Math.Cos(value.b), Math.Sin(value.b));
+                value = R * I;
+
 				output[i] = value;
 			}
-			output[0].a = 1.0;
-			output[0].b = 1.0;
 					
 			return output;
 		}
 
 		public void UpdateLastLayerEpsilon(Complex[] y){
+            Complex one = new Complex(1.0,0.0);
 			for(int i=1; i<Din; i++){
-				epsilons[i].a = -2 * (y[i-1].a - neurons[i].a)*((neurons[i].a)*(1.0-neurons[i].a));
-				epsilons[i].b = -2 * (y[i-1].b - neurons[i].b)*((neurons[i].b)*(1.0-neurons[i].b));
+                //epsilons[i] = -2.0 * (y[i - 1] - neurons[i]) * ((neurons[i]) * (one - neurons[i]));
+                double delta = 0.00001;
+                epsilons[i].a = Math.Log(neurons[i].Norm2() / (y[i - 1].Norm2()+delta))/10.0;
+                epsilons[i].b = Math.Atan(neurons[i].b / neurons[i].a) - Math.Atan(y[i - 1].b / (y[i - 1].a+delta));
+                /*epsilons[i].a = 1.0;
+                epsilons[i].b = 1.0;*/
 			}
 		}
 
@@ -117,8 +147,11 @@ namespace NeuralNetwork {
 				for(int j=0; j<Dout; j++)
 					epsilons[i] = epsilons[i] + e[j+1]*weights[i][j];
 
-				epsilons[i].a *= ((neurons[i].a)*(1.0-neurons[i].a));
-				epsilons[i].b *= ((neurons[i].b)*(1.0-neurons[i].b));
+                Complex one = new Complex(1.0, 0.0);
+                epsilons[i] = epsilons[i] * neurons[i] * (one - neurons[i]); ;
+                //epsilons[i] = epsilons[i] * neurons[i] * (one - neurons[i]);
+				//epsilons[i].a *= ((neurons[i].a)*(1.0-neurons[i].a));
+				//epsilons[i].b *= ((neurons[i].b)*(1.0-neurons[i].b));
 			}
 		}
 
@@ -127,9 +160,12 @@ namespace NeuralNetwork {
 			for(int i=0; i<Din; i++){
 				//delta_weight = 0.0;
 				delta_weight = new Complex(0.0, 0.0);
+                Complex eta_C = new Complex(-eta, 0.0);
+                Complex alpha_C = new Complex(alpha, 0.0);
 				for(int j=0; j<Dout; j++){
-					delta_weight.a = -eta * e[j+1].a * neurons[i].a + alpha * weights_prev[i][j].a;
-					delta_weight.b = -eta * e[j+1].b * neurons[i].b + alpha * weights_prev[i][j].b;
+                    //Important part
+                    delta_weight = eta_C * e[j + 1] * neurons[i] + alpha_C * weights_prev[i][j];
+
 					weights_prev[i][j] = delta_weight;
 					weights[i][j] = weights[i][j] + delta_weight;
 				}
