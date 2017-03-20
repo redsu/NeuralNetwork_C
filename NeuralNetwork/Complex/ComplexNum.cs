@@ -17,10 +17,17 @@ namespace ComplexNum{
         {
             return Math.Sqrt(a * a + b * b);
         }
+
         public double NormR()
         {
             return Math.Sqrt(a * a);
         }
+
+        public Complex Conj()
+        {
+            return new Complex(a, -b);
+        }
+
 		public static Complex operator +(Complex c1, Complex c2){  
 			return new Complex(c1.a + c2.a, c1.b + c2.b);  
 		}
@@ -28,7 +35,8 @@ namespace ComplexNum{
 		public static Complex operator -(Complex c1, Complex c2){  
 			return new Complex(c1.a - c2.a, c1.b - c2.b);  
 		} 
-		public static Complex operator *(Complex c1, Complex c2){  
+		public static Complex operator *(Complex c1, Complex c2){
+            //return new Complex(c1.a * c2.a, c1.b * c2.b);
 			return new Complex(c1.a * c2.a - c1.b * c2.b, c1.a * c2.b + c1.b * c2.a);
 		}
         public static Complex operator *(double c1, Complex c2)

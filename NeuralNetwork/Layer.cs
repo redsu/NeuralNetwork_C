@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+
 namespace NeuralNetwork {
+    
 	class Layer {
 		Random rand = new Random();
 		double[] neurons;
@@ -14,7 +16,7 @@ namespace NeuralNetwork {
 		double[][] weights_prev;
 		int Dout, Din;
 		int node = 0;
-
+        double G = 1.5;
 		public int Node{
 			get{return node;}
 			set{node = value;}
@@ -60,7 +62,7 @@ namespace NeuralNetwork {
 
 		public void Reset(){
 			neurons = new double[Din];
-			epsilons    = new double[Din];
+			epsilons = new double[Din];
 			weights = new double[Din][];
 			weights_prev = new double[Din][];
 			for(int i=0; i<Din; i++){
@@ -75,21 +77,54 @@ namespace NeuralNetwork {
 			//But we can do it on the input data before it send in;
 			for(int i=0; i<Din; i++)
 				for(int j=0; j<Dout; j++){
-					weights[i][j] = (rand.NextDouble()-0.5)*2;
+					weights[i][j] = (rand.NextDouble()-0.5)*2.0;
+                    weights[i][j] /= Math.Sqrt(Din);
 					weights_prev[i][j] = 0.0;
 				}
 		}
 
-		public double[] Output(){
+		public double[] Output(bool last){
 			double[] output = new double[Dout+1];
 			double value;
 			for(int i=1; i<Dout+1; i++){
 				value = 0;
 
-				for(int j=0; j<Din; j++)
-					value += neurons[j] * weights[j][i-1];
-				
-				value = 1.0 / (1.0 + Math.Exp(-value));
+                for (int j = 0; j < Din; j++)
+                {
+                    /*if (Dout < Din)
+                    {
+                        if (i / (Din / Dout) == j)
+                            value += neurons[j] * weights[j][i - 1];
+                    }
+                    else*/
+                        value += neurons[j] * weights[j][i - 1];
+                }
+                if (!last)
+                {
+                    //Sigmoid
+                    //value = 1.0 / (1.0 + Math.Exp(-value))-0.5;
+                    //Atan
+                    //value = Math.Atan(value);
+                    //tanh
+                    value = Math.Tanh(value);
+                    //tanh G
+                    //value = 2.0 / (1.0 + Math.Exp(-G * value)) - 1.0;
+                    //Softsign
+                    //value = value / (1.0 + Math.Abs(value));
+                }
+                else
+                {
+                    /*if (Math.Abs(value) > 1.0 && value > 0.0)
+                        value = 1.0;
+                    else if (Math.Abs(value) > 1.0 && value < 0.0)
+                        value = -1.0;*/
+                    //Atan
+                    //value = Math.Atan(value);
+                    //tanh
+                    //value = Math.Tanh(value);
+                    //tanh G
+                    //value = 2.0 / (1.0 + Math.Exp(-G * value)) - 1.0;
+                }
 				output[i] = value;
 			}
 			output[0] = 1.0;
@@ -98,8 +133,21 @@ namespace NeuralNetwork {
 		}
 
 		public void UpdateLastLayerEpsilon(double[] y){
-			for(int i=1; i<Din; i++)
-				epsilons[i] = -2 * (y[i-1] - neurons[i])*((neurons[i])*(1.0-neurons[i]));
+            for (int i = 1; i < Din; i++)
+            {
+                //Sigmoidal
+                //epsilons[i] = -2.0 * (y[i - 1] - neurons[i]) * ((neurons[i]) * (1.0 - neurons[i]));
+                //Atan
+                //epsilons[i] = -2.0 * (y[i - 1] - neurons[i]) / (1.0 + neurons[i]*neurons[i]);
+                //tanh
+                //epsilons[i] = -2.0 * (y[i - 1] - neurons[i]) * (1.0 - Math.Pow(neurons[i], 2.0));
+                //tanh G                
+                //epsilons[i] = -2.0 * (y[i - 1] - neurons[i]) * (2.0 * G * Math.Exp(-G * neurons[i])) / (1.0 + Math.Exp(-G * neurons[i])) / (1.0 + Math.Exp(-G * neurons[i]));
+                //Softsign
+                //epsilons[i] = -2.0 * (y[i - 1] - neurons[i]) * 1.0 / Math.Pow(1.0+Math.Abs(neurons[i]),2.0);
+                //linear
+                epsilons[i] = -2.0 * (y[i - 1] - neurons[i]);
+            }
 		}
 
 		public void UpdateEpsilon(double[] e){
@@ -108,9 +156,19 @@ namespace NeuralNetwork {
 
 				for(int j=0; j<Dout; j++)
 					epsilons[i] += e[j+1]*weights[i][j];
+                //Sigmoidal
+                //epsilons[i] *= ((neurons[i])*(1.0-neurons[i]));
+                //Atan
+                //epsilons[i] *= 1.0 / (1.0 + neurons[i]*neurons[i]);
+                //tanh
+                epsilons[i] *= (1.0 - Math.Pow(neurons[i], 2.0));
+                //tanh G                
+                //epsilons[i] *= (2.0 * G * Math.Exp(-G * neurons[i])) / (1.0 + Math.Exp(-G * neurons[i])) / (1.0 + Math.Exp(-G * neurons[i]));
+                //Softsign
+                //epsilons[i] *= 1.0 / Math.Pow(1.0 + Math.Abs(neurons[i]), 2.0);
+                //linear
 
-				epsilons[i] *= ((neurons[i])*(1.0-neurons[i]));
-			}
+            }
 		}
 
 		public void UpdateWeight(double[] e, double eta, double alpha){
@@ -131,11 +189,11 @@ namespace NeuralNetwork {
 				for(int i=0; i<Din; i++){
 					norm += weights[i][j]*weights[i][j];
 				}
-				norm = Math.Sqrt(norm);
-				if(norm > 150.0){
+                norm = Math.Sqrt(norm);
+				if(norm > (double)Din*Dout){
 					for(int i=0; i<Din; i++)
 						weights[i][j]/=norm;
-					Console.WriteLine("over");
+					//Console.WriteLine("over");
 				}
 			}
 		}

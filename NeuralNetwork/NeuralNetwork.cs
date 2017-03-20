@@ -146,8 +146,8 @@ namespace NeuralNetwork {
 					//I:inputdim, O:outputDim, H:hiddenDim
 					numOfLayer = 3;	//Default layers : 3(1 hidden)
 					//input dimension / hidden layer has 5 Neurons / output dimension
-					layer.Add(new Layer(input_dimension+1, 5));
-					layer.Add(new Layer(6, output_dimension));
+					layer.Add(new Layer(input_dimension+1, 10));
+					layer.Add(new Layer(11, output_dimension));
 					layer.Add(new Layer(output_dimension+1, 1));
 					for(int i=0; i<numOfLayer; i++)
 						layer[i].Node = i;
@@ -260,9 +260,14 @@ namespace NeuralNetwork {
 					//Update all x (Pass forward)
 					for(int j=0; j<layer[0].InputDim; j++)
 						layer[0].Neurons[j] = NN_Data.input[i][j];
-				
-					for(int j=1; j<numOfLayer; j++)
-						layer[j].Neurons = (double[])layer[j-1].Output().Clone();
+
+                    for (int j = 1; j < numOfLayer; j++)
+                    {
+                        if (j != numOfLayer-1)
+                            layer[j].Neurons = (double[])layer[j - 1].Output(false).Clone();
+                        else
+                            layer[j].Neurons = (double[])layer[j - 1].Output(true).Clone();
+                    }
 				
 					//Update all epsilons
 					layer[numOfLayer-1].UpdateLastLayerEpsilon(NN_Data.output[i]);
@@ -270,7 +275,8 @@ namespace NeuralNetwork {
 						layer[j].UpdateEpsilon(layer[j+1].Epsilons);
 				
 					////Update all weights
-					for(int j=0; j<numOfLayer-1; j++)
+					//for(int j=0; j<numOfLayer-1; j++)
+                    for (int j = numOfLayer - 2; j >= 0; j--)
 						layer[j].UpdateWeight(layer[j+1].Epsilons, eta, alpha);
 
 					//Calculate RMS Error
@@ -279,7 +285,7 @@ namespace NeuralNetwork {
 				}
 			}
 			//Calculate average RMS Error
-			EinRMS = Math.Sqrt(Ein_iter/((double)numOfTrainData*(layer[numOfLayer-1].InputDim-1)));
+            EinRMS = Math.Sqrt(Ein_iter / ((double)numOfTrainData * ((double)layer[numOfLayer - 1].InputDim - 1.0)));
 			EinValidation();
 			ValidationTable();
 			switch(eta_type){
@@ -320,16 +326,22 @@ namespace NeuralNetwork {
 					//Update all x (Pass forward)
 					for(int j=0; j<layer[0].InputDim; j++)
 						layer[0].Neurons[j] = NN_Data.input[i][j];
-				
-					for(int j=1; j<numOfLayer; j++)
-						layer[j].Neurons = (double[])layer[j-1].Output().Clone();
+
+                    for (int j = 1; j < numOfLayer; j++)
+                    {
+                        //layer[j].Neurons = (double[])layer[j - 1].Output().Clone();
+                        if (j != numOfLayer - 1)
+                            layer[j].Neurons = (double[])layer[j - 1].Output(false).Clone();
+                        else
+                            layer[j].Neurons = (double[])layer[j - 1].Output(true).Clone();
+                    }
 
 					//Calculate RMS Error of testing data
 					for(int j=1; j<layer[numOfLayer-1].InputDim; j++)
 						Eout_test += Math.Pow((NN_Data.output[i][j-1]-layer[numOfLayer-1].Neurons[j]), 2.0);
 				}
 			}
-			EoutRMS = Math.Sqrt(Eout_test/((double)numOfTestData*(layer[numOfLayer-1].InputDim-1)));
+			EoutRMS = Math.Sqrt(Eout_test/((double)numOfTestData*(layer[numOfLayer-1].InputDim-1.0)));
 		}
 
 		public int[][] ValidationTable(){
@@ -350,9 +362,15 @@ namespace NeuralNetwork {
 					//Update all x (Pass forward)
 					for(int j=0; j<layer[0].InputDim; j++)
 						layer[0].Neurons[j] = NN_Data.input[i][j];
-				
-					for(int j=1; j<numOfLayer; j++)
-						layer[j].Neurons = (double[])layer[j-1].Output().Clone();
+
+                    for (int j = 1; j < numOfLayer; j++)
+                    {
+                        //layer[j].Neurons = (double[])layer[j - 1].Output().Clone();
+                        if (j != numOfLayer - 1)
+                            layer[j].Neurons = (double[])layer[j - 1].Output(false).Clone();
+                        else
+                            layer[j].Neurons = (double[])layer[j - 1].Output(true).Clone();
+                    }
 
 					//Find the dimesion has largest value(the class which the input be classified)
 					Max = double.MinValue;
@@ -392,9 +410,15 @@ namespace NeuralNetwork {
 					//Update all x (Pass forward)
 					for(int j=0; j<layer[0].InputDim; j++)
 						layer[0].Neurons[j] = NN_Data.input[i][j];
-				
-					for(int j=1; j<numOfLayer; j++)
-						layer[j].Neurons = (double[])layer[j-1].Output().Clone();
+
+                    for (int j = 1; j < numOfLayer; j++)
+                    {
+                        //layer[j].Neurons = (double[])layer[j - 1].Output().Clone();
+                        if (j != numOfLayer - 1)
+                            layer[j].Neurons = (double[])layer[j - 1].Output(false).Clone();
+                        else
+                            layer[j].Neurons = (double[])layer[j - 1].Output(true).Clone();
+                    }
 
 					//Find the dimesion has largest value(the class which the input be classified)
 					Max = double.MinValue;

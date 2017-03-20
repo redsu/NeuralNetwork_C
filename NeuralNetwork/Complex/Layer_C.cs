@@ -95,33 +95,48 @@ namespace NeuralNetwork_C{
 				for(int j=0; j<Dout; j++){
 					weights[i][j].a = (rand.NextDouble()-0.5)*2.0;
 					weights[i][j].b = (rand.NextDouble()-0.5)*2.0;
+                    //weights[i][j].b = 0.0;
 					weights_prev[i][j].a = weights_prev[i][j].b = 0.0;
 				}
 		}
 
-		public Complex[] Output(){
+		public Complex[] Output(bool last){
 			Complex[] output = new Complex[Dout+1];
 			Complex value = new Complex();
             output[0] = new Complex(1.0,0.0);
 			for(int i=1; i<Dout+1; i++){
                 output[i] = new Complex();
                 value = new Complex();
-				for(int j=0; j<Din; j++){
-					value = value + neurons[j] * weights[j][i-1];				
-				}
+                if (Din-1 == Dout)
+                {
+                    value = value + neurons[i-1] * weights[i-1][i - 1];
+                    Console.WriteLine("Flat");
+                }
+                else
+                {
+                    for (int j = 0; j < Din; j++)
+                    {
+                        value = value + neurons[j] * weights[j][i - 1];
+                    }
+                }
 				//Activation function maybe change to tanh();
                 Complex N = new Complex(Math.Tanh(value.a), Math.Tan(value.b));
                 Complex D = new Complex(1.0, Math.Tanh(value.a) * Math.Tan(value.b));
-				/*value.a = 1.0 / (1.0 + Math.Exp(-value.a));
-				value.b = 1.0 / (1.0 + Math.Exp(-value.b));*/
+			    
+				
                 //value = N / D;
                 
                 //Activation function f(z) = {z/|z|}
-                value = value / value.Norm2();
-                Complex R = new Complex(Math.Exp(value.a),0.0);
-                Complex I = new Complex(Math.Cos(value.b), Math.Sin(value.b));
-                value = R * I;
-
+                //value = value / value.Norm2();
+                Complex R = new Complex(Math.Exp(-value.a),0.0);
+                Complex I = new Complex(Math.Cos(-value.b), Math.Sin(-value.b));
+                Complex one = new Complex(1.0, 0.0);
+                /*if (!last)
+                    value = one / (one + (R * I));
+                else
+                    ;*/
+                //value.a = 1.0 / (1.0 + Math.Exp(-value.a));
+                //value.b = 1.0 / (1.0 + Math.Exp(-value.b));
 				output[i] = value;
 			}
 					
@@ -132,9 +147,15 @@ namespace NeuralNetwork_C{
             Complex one = new Complex(1.0,0.0);
 			for(int i=1; i<Din; i++){
                 //epsilons[i] = -2.0 * (y[i - 1] - neurons[i]) * ((neurons[i]) * (one - neurons[i]));
-                double delta = 0.00001;
-                epsilons[i].a = Math.Log(neurons[i].Norm2() / (y[i - 1].Norm2()+delta))/10.0;
-                epsilons[i].b = Math.Atan(neurons[i].b / neurons[i].a) - Math.Atan(y[i - 1].b / (y[i - 1].a+delta));
+                
+                
+                
+
+                //epsilons[i].a = -2.0 * (y[i - 1].a - neurons[i].a) * neurons[i].a * (1.0 - neurons[i].a);
+                //epsilons[i].b = -2.0 * (y[i - 1].b - neurons[i].b) * neurons[i].b * (1.0 - neurons[i].b);
+
+                epsilons[i] = -2.0 * (y[i - 1] - neurons[i]);// *new Complex(1.0, 1.0);// *((neurons[i]) * (one - neurons[i]));
+                //epsilons[i] = -2.0 * (y[i - 1] - neurons[i]) *((neurons[i]) * (one - neurons[i]));
                 /*epsilons[i].a = 1.0;
                 epsilons[i].b = 1.0;*/
 			}
@@ -148,8 +169,9 @@ namespace NeuralNetwork_C{
 					epsilons[i] = epsilons[i] + e[j+1]*weights[i][j];
 
                 Complex one = new Complex(1.0, 0.0);
-                epsilons[i] = epsilons[i] * neurons[i] * (one - neurons[i]); ;
-                //epsilons[i] = epsilons[i] * neurons[i] * (one - neurons[i]);
+                Complex fRI = new Complex(neurons[i].a * (1.0 - neurons[i].a), neurons[i].b * (1.0 - neurons[i].b));
+                //epsilons[i] = epsilons[i] * fRI;
+                //epsilons[i] = epsilons[i] * neurons[i] * (one - neurons[i]) * new Complex(1.0, 1.0);
 				//epsilons[i].a *= ((neurons[i].a)*(1.0-neurons[i].a));
 				//epsilons[i].b *= ((neurons[i].b)*(1.0-neurons[i].b));
 			}
@@ -179,7 +201,7 @@ namespace NeuralNetwork_C{
 					norm = norm + weights[i][j]*weights[i][j];
 				}
 				double norm2 = Math.Sqrt(norm.a*norm.a+norm.b*norm.b);
-				if(norm2 > 150.0){
+				if(norm2 > 250.0){
 					for(int i=0; i<Din; i++)
 						weights[i][j] = weights[i][j] / new Complex(norm2, 0.0);
 					Console.WriteLine("over");

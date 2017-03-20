@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using NeuralNetwork_C;
 namespace NeuralNetwork {
 	public partial class NeuralNetworkSystem : Form {
-        NeuralNetworkC NN = null;
+        NeuralNetwork NN = null;
 		int count = 0;
 		bool FileLoaded;
 		public NeuralNetworkSystem() {
@@ -28,7 +28,7 @@ namespace NeuralNetwork {
 		//Import .cal File
 		private void OpenFile_Click(object sender, EventArgs e) {
 			//new a NeuralNetwork class
-            NN = new NeuralNetworkC();
+            NN = new NeuralNetwork();
 			
 			//Initilize the buttons
 			btn_run.Enabled = false;
@@ -49,13 +49,13 @@ namespace NeuralNetwork {
 				correctness_table.Columns.Clear();
 
 				//Add the datagridview table of correctness examination
-				for(int i=0; i<NN.Dimout; i++)
-					correctness_table.Columns.Add("y"+i.ToString(), "y"+i.ToString());
+				//for(int i=0; i<NN.Dimout; i++)
+					//correctness_table.Columns.Add("y"+i.ToString(), "y"+i.ToString());
 
-				for(int i=0; i<NN.Dimout; i++){
+				/*for(int i=0; i<NN.Dimout; i++){
 					correctness_table.Rows.Add();
 					correctness_table.Rows[i].HeaderCell.Value = "Out " + i.ToString();
-				}
+				}*/
 
 				correctness_table.RowHeadersWidth = 100;
 
@@ -170,6 +170,8 @@ namespace NeuralNetwork {
 
 		private void btn_reset_Click(object sender, EventArgs e) {
 			//Reset NN system and chart
+            /*NN.Eta = 0.7;
+            NN.LearningRate = 0.999;*/
 			NN.Reset();
 			chart.Series[0].Points.Clear();
 			chart.Series[1].Points.Clear();

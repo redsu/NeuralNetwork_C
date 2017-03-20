@@ -362,7 +362,7 @@
             this.num_perc.Location = new System.Drawing.Point(167, 91);
             this.num_perc.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.num_perc.Maximum = new decimal(new int[] {
-            1000,
+            2048,
             0,
             0,
             0});
